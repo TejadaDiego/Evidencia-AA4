@@ -1,0 +1,20 @@
+body {
+    font-family: Arial;
+    background: #f5f5f5;
+}
+
+table {
+    background: white;
+    border-collapse: collapse;
+    width: 60%;
+}
+
+th {
+    background: #333;
+    color: white;
+}
+
+td, th {
+    padding: 10px;
+    text-align: center;
+}
