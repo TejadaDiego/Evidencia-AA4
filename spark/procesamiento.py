@@ -1,83 +1,153 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, count
 
-spark = SparkSession.builder.appName("PMR-Proyecto").getOrCreate()
+# =========================================
+# INICIAR SPARK
+# =========================================
 
-# ==============================
-# CARGA DE DATOS
-# ==============================
+spark = SparkSession.builder \
+    .appName("PMR-Batch") \
+    .getOrCreate()
 
-df = spark.read.csv("/data/pasajeros.csv", header=True, inferSchema=True)
+print("====================================")
+print("✅ Spark iniciado correctamente")
+print("====================================")
 
-print("=== DATOS INICIALES ===")
+# =========================================
+# LEER CSV PRINCIPAL
+# =========================================
+
+df = spark.read.csv(
+    "data/pasajeros.csv",
+    header=True,
+    inferSchema=True
+)
+
+print("====================================")
+print("✅ CSV cargado")
+print("====================================")
+
+# =========================================
+# MOSTRAR ESTRUCTURA
+# =========================================
+
+print("====================================")
+print("📌 ESQUEMA")
+print("====================================")
+
+df.printSchema()
+
+# =========================================
+# MOSTRAR DATOS
+# =========================================
+
+print("====================================")
+print("📌 PRIMEROS REGISTROS")
+print("====================================")
+
 df.show(10)
 
-# ==============================
-# NORMALIZAR COLUMNAS (CLAVE)
-# ==============================
+# =========================================
+# KPI 1 - TOTAL PASAJEROS
+# =========================================
 
-# Convierte: "Tipo PMR" -> "tipo_pmr"
-df = df.toDF(*[c.strip().lower().replace(" ", "_") for c in df.columns])
+print("====================================")
+print("📌 KPI 1 - TOTAL PASAJEROS")
+print("====================================")
 
-print("=== COLUMNAS NORMALIZADAS ===")
-print(df.columns)
+print(df.count())
 
-# ==============================
-# VALIDACIÓN DE COLUMNAS
-# ==============================
+# =========================================
+# KPI 2 - PASAJEROS PMR
+# =========================================
 
-required_cols = ["tipo_pmr", "estacion_salida", "estacion_llegada"]
+print("====================================")
+print("📌 KPI 2 - PASAJEROS PMR")
+print("====================================")
 
-for col_name in required_cols:
-    if col_name not in df.columns:
-        raise Exception(f"❌ Falta la columna requerida: {col_name}")
+df.groupBy("tipo_pmr").count().show()
 
-# ==============================
-# LIMPIEZA
-# ==============================
+# =========================================
+# KPI 3 - PASAJEROS POR ESTACION
+# =========================================
 
-df = df.dropna()
+print("====================================")
+print("📌 KPI 3 - PASAJEROS POR ESTACION")
+print("====================================")
 
-# ==============================
-# ANALISIS
-# ==============================
+kpi_estaciones = df.groupBy(
+    "estacion_salida"
+).count().orderBy(
+    col("count").desc()
+)
 
-print("=== CANTIDAD POR TIPO PMR ===")
-tipo_df = df.groupBy("tipo_pmr").count()
-tipo_df.show()
+kpi_estaciones.show()
 
-print("=== DEMANDA POR ESTACION ===")
-estaciones_df = df.groupBy("estacion_salida").count().orderBy(col("count").desc())
-estaciones_df.show()
-
-# ==============================
+# =========================================
 # SPARK SQL
-# ==============================
+# =========================================
 
-df.createOrReplaceTempView("pmr")
+print("====================================")
+print("📌 SPARK SQL")
+print("====================================")
 
-resultado = spark.sql("""
-SELECT estacion_llegada, COUNT(*) as total
-FROM pmr
-GROUP BY estacion_llegada
+df.createOrReplaceTempView("pasajeros")
+
+sql_resultado = spark.sql("""
+
+SELECT
+    estacion_salida,
+    COUNT(*) AS total
+FROM pasajeros
+GROUP BY estacion_salida
 ORDER BY total DESC
+
 """)
 
-print("=== RESULTADO SQL ===")
-resultado.show()
+sql_resultado.show()
 
-# ==============================
-# GUARDAR RESULTADOS
-# ==============================
+# =========================================
+# RDD
+# =========================================
 
-tipo_df.write.mode("overwrite").json("/data/output_tipo")
-estaciones_df.write.mode("overwrite").json("/data/output_estaciones")
-resultado.write.mode("overwrite").json("/data/output_sql")
+print("====================================")
+print("📌 RDD")
+print("====================================")
 
-print("✔ Resultados guardados en /data/output_*")
+rdd = df.rdd
 
-# ==============================
+print("Total RDD:")
+print(rdd.count())
+
+print("Primer registro RDD:")
+print(rdd.first())
+
+# =========================================
+# EXPORTAR RESULTADOS
+# =========================================
+
+print("====================================")
+print("📌 EXPORTANDO RESULTADOS")
+print("====================================")
+
+kpi_estaciones.write.mode("overwrite").csv(
+    "output/output_estaciones"
+)
+
+sql_resultado.write.mode("overwrite").json(
+    "output/output_sql"
+)
+
+print("====================================")
+print("✅ RESULTADOS EXPORTADOS")
+print("====================================")
+
+# =========================================
 # FINALIZAR
-# ==============================
+# =========================================
 
 spark.stop()
+
+print("====================================")
+print("✅ PROCESAMIENTO FINALIZADO")
+print("====================================")
