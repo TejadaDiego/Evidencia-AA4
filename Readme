@@ -1,0 +1,210 @@
+# 🚆 Proyecto AA4 - Big Data PMR
+
+## 📌 Descripción del Proyecto
+
+Este proyecto implementa una solución Big Data para el análisis de pasajeros PMR (Personas con Movilidad Reducida) en estaciones de transporte.
+
+La solución integra procesamiento batch con Apache Spark, procesamiento streaming con Kafka y Spark Structured Streaming, almacenamiento documental con MongoDB y visualización de resultados mediante gráficos automáticos.
+
+---
+
+# 🎯 Objetivo
+
+Analizar grandes volúmenes de datos relacionados con pasajeros PMR para generar KPIs, detectar eventos críticos en tiempo real y apoyar la toma de decisiones mediante tecnologías Big Data.
+
+---
+
+# 🛠️ Tecnologías Utilizadas
+
+- Apache Spark
+- Spark SQL
+- RDD
+- Kafka
+- Spark Structured Streaming
+- MongoDB
+- Docker
+- Python
+- Visual Studio Code
+- GitHub
+
+---
+
+# 📂 Estructura del Proyecto
+
+text
+Proyecto-AA4/
+│
+├── data/
+│   ├── pasajeros.csv
+│   ├── estaciones.json
+│   ├── horarios.json
+│   ├── eventos.txt
+│   └── personal.csv
+│
+├── spark/
+│   ├── procesamiento.py
+│   └── graficos.py
+│
+├── mongodb/
+│   └── cargar_mongo.py
+│
+├── streaming/
+│   ├── productor_eventos.py
+│   └── spark_streaming.py
+│
+├── output/
+│   ├── output_estaciones/
+│   ├── output_sql/
+│   └── graficos/
+│
+├── docker-compose.yml
+│
+└── README.md
+
+
+---
+
+# 📊 Procesamiento Batch con Spark
+
+Se realizó:
+
+- Lectura de archivos CSV y JSON
+- Limpieza de datos
+- Transformaciones de columnas
+- Uso de DataFrames
+- Uso de Spark SQL
+- Uso de RDD
+- Generación de KPIs
+- Exportación de resultados
+
+---
+
+# 📈 KPIs Generados
+
+- Total de pasajeros registrados
+- Total de pasajeros PMR
+- Pasajeros por estación
+- Pasajeros por tipo PMR
+- Horarios con mayor flujo de pasajeros
+
+---
+
+# ⚡ Streaming con Kafka
+
+Se implementó:
+
+- Productor de eventos Kafka
+- Topic pmr-events
+- Simulación de eventos en tiempo real
+- Procesamiento con Spark Structured Streaming
+- Generación de alertas automáticas
+
+---
+
+# 🍃 MongoDB
+
+Base de datos utilizada:
+
+text
+pmr_db
+
+
+Colecciones:
+
+- pasajeros
+- kpi_estaciones
+- eventos_streaming
+- alertas
+
+---
+
+# 📊 Visualizaciones
+
+El proyecto genera automáticamente gráficos:
+
+- Pasajeros por estación
+- Top estaciones
+- Distribución de pasajeros
+
+---
+
+# 🐳 Docker
+
+El entorno fue desplegado utilizando Docker para:
+
+- Spark
+- Kafka
+- Zookeeper
+- MongoDB
+
+---
+
+# ▶️ Ejecución del Proyecto
+
+## 1️⃣ Generar datos
+
+bash
+py data/generadordatos.py
+
+
+---
+
+## 2️⃣ Procesamiento batch
+
+bash
+py spark/procesamiento.py
+
+
+---
+
+## 3️⃣ Generar gráficos
+
+bash
+py spark/graficos.py
+
+
+---
+
+## 4️⃣ Cargar MongoDB
+
+bash
+py mongodb/cargar_mongo.py
+
+
+---
+
+## 5️⃣ Productor Kafka
+
+bash
+py streaming/productor_eventos.py
+
+
+---
+
+## 6️⃣ Spark Streaming
+
+bash
+py streaming/spark_streaming.py
+
+
+---
+
+# 👥 Integrantes
+
+- Integrante 1
+- Integrante 2
+- Integrante 3
+- Integrante 4
+- Integrante 5
+
+---
+
+# 📌 Resultados
+
+El proyecto permitió integrar procesamiento batch y streaming para analizar grandes volúmenes de datos PMR y generar alertas en tiempo real mediante tecnologías Big Data.
+
+---
+
+# 🚀 Conclusión
+
+La solución implementada demuestra el uso de tecnologías Big Data modernas para el procesamiento masivo de datos históricos y eventos en tiempo real, permitiendo análisis eficientes y generación de información útil para la toma de decisiones.
