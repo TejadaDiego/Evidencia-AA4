@@ -1,12 +1,15 @@
 from pymongo import MongoClient
 import pandas as pd
 import glob
+import os
 
 # =========================================
 # CONEXION MONGODB
 # =========================================
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(
+    "mongodb://mongodb:27017/"
+)
 
 db = client["pmr_db"]
 
@@ -15,22 +18,45 @@ print("✅ Conectado a MongoDB")
 print("====================================")
 
 # =========================================
-# LEER CSV RESULTADO SPARK
+# BUSCAR ARCHIVO CSV SPARK
 # =========================================
 
-archivo = glob.glob(
+archivos = glob.glob(
     "output/output_estaciones/part*.csv"
-)[0]
+)
+
+if len(archivos) == 0:
+
+    print("❌ No se encontró archivo CSV")
+    exit()
+
+archivo = archivos[0]
+
+print("====================================")
+print(f"📌 Archivo encontrado: {archivo}")
+print("====================================")
+
+# =========================================
+# LEER CSV
+# =========================================
 
 df = pd.read_csv(
     archivo,
     header=None
 )
 
+# =========================================
+# RENOMBRAR COLUMNAS
+# =========================================
+
 df.columns = [
     "estacion_salida",
     "total_pasajeros"
 ]
+
+print("====================================")
+print("📌 DATAFRAME")
+print("====================================")
 
 print(df.head())
 
@@ -43,13 +69,17 @@ data = df.to_dict(
 )
 
 # =========================================
-# CREAR COLECCION
+# COLECCION
 # =========================================
 
 collection = db["kpi_estaciones"]
 
 # limpiar colección anterior
 collection.delete_many({})
+
+print("====================================")
+print("🗑️ Colección limpiada")
+print("====================================")
 
 # insertar nuevos documentos
 collection.insert_many(data)
@@ -67,6 +97,7 @@ print("📌 CONSULTA MONGODB")
 print("====================================")
 
 for doc in collection.find({}, {"_id": 0}):
+
     print(doc)
 
 print("====================================")

@@ -1,97 +1,96 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import glob
 
 # =========================================
 # CREAR CARPETA GRAFICOS
 # =========================================
 
-os.makedirs("output/graficos", exist_ok=True)
+os.makedirs(
+    "output/graficos",
+    exist_ok=True
+)
 
 # =========================================
-# LEER RESULTADOS SPARK
+# LEER CSV SPARK
 # =========================================
+
+archivo = glob.glob(
+    "output/output_estaciones/part*.csv"
+)[0]
 
 df = pd.read_csv(
-    "output/output_estaciones/part-00000*.csv",
+    archivo,
     header=None
 )
 
 df.columns = [
-    "estacion_salida",
+    "estacion",
     "total"
 ]
 
+print("====================================")
+print("✅ DATAFRAME CARGADO")
+print("====================================")
+
+print(df)
+
 # =========================================
-# GRAFICO 1
-# PASAJEROS POR ESTACION
+# GRAFICO BARRAS
 # =========================================
 
 plt.figure(figsize=(10,6))
 
 plt.bar(
-    df["estacion_salida"],
+    df["estacion"],
     df["total"]
 )
 
-plt.title("Pasajeros por Estación")
-plt.xlabel("Estación")
-plt.ylabel("Cantidad")
+plt.title(
+    "Pasajeros por Estación"
+)
+
+plt.xlabel(
+    "Estación"
+)
+
+plt.ylabel(
+    "Total Pasajeros"
+)
 
 plt.savefig(
-    "output/graficos/pasajeros_por_estacion.png"
+    "output/graficos/estaciones.png"
 )
 
-print("✅ Gráfico 1 generado")
+print("====================================")
+print("✅ Grafico estaciones generado")
+print("====================================")
 
 # =========================================
-# GRAFICO 2
-# TOP ESTACIONES
-# =========================================
-
-top5 = df.sort_values(
-    by="total",
-    ascending=False
-).head(5)
-
-plt.figure(figsize=(10,6))
-
-plt.bar(
-    top5["estacion_salida"],
-    top5["total"]
-)
-
-plt.title("Top 5 Estaciones")
-plt.xlabel("Estación")
-plt.ylabel("Cantidad")
-
-plt.savefig(
-    "output/graficos/top5_estaciones.png"
-)
-
-print("✅ Gráfico 2 generado")
-
-# =========================================
-# GRAFICO 3
-# PIE CHART
+# GRAFICO PIE
 # =========================================
 
 plt.figure(figsize=(8,8))
 
 plt.pie(
+
     df["total"],
-    labels=df["estacion_salida"],
-    autopct='%1.1f%%'
+
+    labels=df["estacion"],
+
+    autopct="%1.1f%%"
+
 )
 
-plt.title("Distribución de Pasajeros")
+plt.title(
+    "Distribución de Pasajeros"
+)
 
 plt.savefig(
-    "output/graficos/distribucion_pasajeros.png"
+    "output/graficos/distribucion.png"
 )
 
-print("✅ Gráfico 3 generado")
-
 print("====================================")
-print("✅ TODOS LOS GRÁFICOS GENERADOS")
+print("✅ Grafico distribucion generado")
 print("====================================")

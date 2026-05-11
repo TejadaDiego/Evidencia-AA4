@@ -155,20 +155,41 @@ print("====================================")
 print("📌 EXPORTANDO RESULTADOS")
 print("====================================")
 
+# =========================================
 # EXPORTAR KPI ESTACIONES
-kpi_estaciones.write.mode("overwrite").csv(
-    "output/output_estaciones"
-)
+# =========================================
 
+kpi_estaciones.write \
+    .mode("overwrite") \
+    .option("header", True) \
+    .csv("output/output_estaciones")
+
+# =========================================
 # EXPORTAR SQL
-sql_resultado.write.mode("overwrite").json(
-    "output/output_sql"
-)
+# =========================================
 
+sql_resultado.write \
+    .mode("overwrite") \
+    .option("header", True) \
+    .csv("output/output_sql")
+
+# =========================================
 # EXPORTAR KPI PMR
-kpi_pmr.write.mode("overwrite").json(
-    "output/output_tipo"
-)
+# =========================================
+
+kpi_pmr.write \
+    .mode("overwrite") \
+    .option("header", True) \
+    .csv("output/output_tipo")
+
+# =========================================
+# EXPORTAR KPI HORAS
+# =========================================
+
+kpi_horas.write \
+    .mode("overwrite") \
+    .option("header", True) \
+    .csv("output/output_horas")
 
 print("====================================")
 print("✅ RESULTADOS EXPORTADOS")
