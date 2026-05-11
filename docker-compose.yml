@@ -1,5 +1,3 @@
-version: '3'
-
 services:
 
   # =========================================
@@ -32,11 +30,8 @@ services:
 
     environment:
       KAFKA_BROKER_ID: 1
-
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   # =========================================
@@ -54,19 +49,21 @@ services:
   # SPARK
   # =========================================
 
+    # =========================================
+  # SPARK
+  # =========================================
+
   spark:
-    image: bitnami/spark:latest
+    image: apache/spark:latest
     container_name: spark
 
     ports:
+      - "4040:4040"
       - "8080:8080"
 
-    environment:
-      - SPARK_MODE=master
-
-    command: bash -c "tail -f /dev/null"
+    command: tail -f /dev/null
 
     volumes:
       - ./data:/data
-      - ./spark:/app
+      - ./src:/src
       - ./output:/output
