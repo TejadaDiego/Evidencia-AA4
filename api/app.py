@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from flask_cors import CORS
 
 # =========================================
-# APP
+# INICIAR FLASK
 # =========================================
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 # =========================================
-# MONGODB
+# CONEXION MONGODB
 # =========================================
 
 client = MongoClient(
@@ -27,26 +27,22 @@ print("✅ API conectada a MongoDB")
 print("====================================")
 
 # =========================================
-# HOME
+# RUTA PRINCIPAL
 # =========================================
 
 @app.route("/")
-
 def home():
 
     return jsonify({
-
         "mensaje": "API PMR funcionando 🚀"
-
     })
 
 # =========================================
-# ESTACIONES
+# ENDPOINT ESTACIONES
 # =========================================
 
-@app.route("/estaciones", methods=["GET"])
-
-def get_estaciones():
+@app.route("/estaciones")
+def estaciones():
 
     data = []
 
@@ -57,37 +53,13 @@ def get_estaciones():
     return jsonify(data)
 
 # =========================================
-# KPI TOTAL
-# =========================================
-
-@app.route("/total", methods=["GET"])
-
-def total_pasajeros():
-
-    total = 0
-
-    for doc in collection.find():
-
-        total += int(
-            doc["total_pasajeros"]
-        )
-
-    return jsonify({
-
-        "total_pasajeros": total
-
-    })
-
-# =========================================
-# RUN
+# EJECUTAR API
 # =========================================
 
 if __name__ == "__main__":
 
     app.run(
-
         host="0.0.0.0",
         port=5000,
         debug=True
-
     )
