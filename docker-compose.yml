@@ -19,7 +19,7 @@ services:
   # =========================================
 
   broker:
-    image: confluentinc/cp-kafka:7.5.0
+    image: confluentinc/cp-kafka:latest
     container_name: broker
 
     depends_on:
@@ -32,8 +32,8 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
   # =========================================
   # MONGODB
   # =========================================
@@ -49,10 +49,6 @@ services:
   # SPARK
   # =========================================
 
-    # =========================================
-  # SPARK
-  # =========================================
-
   spark:
     image: apache/spark:latest
     container_name: spark
@@ -64,6 +60,4 @@ services:
     command: tail -f /dev/null
 
     volumes:
-      - ./data:/data
-      - ./src:/src
-      - ./output:/output
+      - ./:/opt/project

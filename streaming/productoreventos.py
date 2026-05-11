@@ -3,14 +3,27 @@ import json
 import random
 import time
 
+# ============================================
+# CONEXIÓN A KAFKA
+# ============================================
+
 producer = KafkaProducer(
-    bootstrap_servers='localhost:9092',
+    bootstrap_servers='broker:9092',
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
+# ============================================
+# DATOS BASE
+# ============================================
+
 estaciones = [
-    "GAM", "JAR", "VMA", "SMA",
-    "ANG", "UNI", "NAR"
+    "GAM",
+    "JAR",
+    "VMA",
+    "SMA",
+    "ANG",
+    "UNI",
+    "NAR"
 ]
 
 tipos_pmr = [
@@ -27,8 +40,12 @@ tipos_evento = [
     "incidencia"
 ]
 
+# ============================================
+# ENVÍO DE EVENTOS
+# ============================================
+
 print("====================================")
-print("✅ ENVIANDO EVENTOS KAFKA")
+print("✅ ENVIANDO EVENTOS A KAFKA")
 print("====================================")
 
 for i in range(1, 1001):
@@ -56,9 +73,11 @@ for i in range(1, 1001):
     }
 
     producer.send(
-        "pmr-events",
+        "gestordetren",
         evento
     )
+
+    producer.flush()
 
     print(evento)
 
