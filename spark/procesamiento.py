@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, count
+from pyspark.sql.functions import col
 
 # =========================================
 # INICIAR SPARK
@@ -8,6 +8,8 @@ from pyspark.sql.functions import col, count
 spark = SparkSession.builder \
     .appName("PMR-Batch") \
     .getOrCreate()
+
+spark.sparkContext.setLogLevel("ERROR")
 
 print("====================================")
 print("✅ Spark iniciado correctamente")
@@ -28,7 +30,7 @@ print("✅ CSV cargado")
 print("====================================")
 
 # =========================================
-# MOSTRAR ESTRUCTURA
+# MOSTRAR ESQUEMA
 # =========================================
 
 print("====================================")
@@ -45,7 +47,7 @@ print("====================================")
 print("📌 PRIMEROS REGISTROS")
 print("====================================")
 
-df.show(10)
+df.show(10, False)
 
 # =========================================
 # KPI 1 - TOTAL PASAJEROS
@@ -55,7 +57,9 @@ print("====================================")
 print("📌 KPI 1 - TOTAL PASAJEROS")
 print("====================================")
 
-print(df.count())
+total_pasajeros = df.count()
+
+print(f"Total pasajeros: {total_pasajeros}")
 
 # =========================================
 # KPI 2 - PASAJEROS PMR
@@ -65,7 +69,13 @@ print("====================================")
 print("📌 KPI 2 - PASAJEROS PMR")
 print("====================================")
 
-df.groupBy("tipo_pmr").count().show()
+kpi_pmr = df.groupBy(
+    "tipo_pmr"
+).count().orderBy(
+    col("count").desc()
+)
+
+kpi_pmr.show()
 
 # =========================================
 # KPI 3 - PASAJEROS POR ESTACION
@@ -82,6 +92,22 @@ kpi_estaciones = df.groupBy(
 )
 
 kpi_estaciones.show()
+
+# =========================================
+# KPI 4 - HORAS MÁS USADAS
+# =========================================
+
+print("====================================")
+print("📌 KPI 4 - HORAS MÁS USADAS")
+print("====================================")
+
+kpi_horas = df.groupBy(
+    "hora"
+).count().orderBy(
+    col("count").desc()
+)
+
+kpi_horas.show()
 
 # =========================================
 # SPARK SQL
@@ -116,8 +142,7 @@ print("====================================")
 
 rdd = df.rdd
 
-print("Total RDD:")
-print(rdd.count())
+print(f"Total RDD: {rdd.count()}")
 
 print("Primer registro RDD:")
 print(rdd.first())
@@ -130,12 +155,19 @@ print("====================================")
 print("📌 EXPORTANDO RESULTADOS")
 print("====================================")
 
+# EXPORTAR KPI ESTACIONES
 kpi_estaciones.write.mode("overwrite").csv(
     "output/output_estaciones"
 )
 
+# EXPORTAR SQL
 sql_resultado.write.mode("overwrite").json(
     "output/output_sql"
+)
+
+# EXPORTAR KPI PMR
+kpi_pmr.write.mode("overwrite").json(
+    "output/output_tipo"
 )
 
 print("====================================")

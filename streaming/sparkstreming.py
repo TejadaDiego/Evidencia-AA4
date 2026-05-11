@@ -22,8 +22,9 @@ print("====================================")
 
 df = spark.readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", "localhost:9092") \
+    .option("kafka.bootstrap.servers", "broker:9092") \
     .option("subscribe", "pmr-events") \
+    .option("startingOffsets", "earliest") \
     .load()
 
 # =========================================
@@ -72,10 +73,12 @@ schema = StructType([
 # =========================================
 
 df_json = df_string.select(
+
     from_json(
         col("value"),
         schema
     ).alias("data")
+
 )
 
 df_final = df_json.select(
@@ -90,6 +93,10 @@ alertas = df_final.filter(
     col("minutos_retraso") > 15
 )
 
+print("====================================")
+print("✅ MOSTRANDO ALERTAS")
+print("====================================")
+
 # =========================================
 # MOSTRAR STREAM
 # =========================================
@@ -97,6 +104,7 @@ alertas = df_final.filter(
 query = alertas.writeStream \
     .outputMode("append") \
     .format("console") \
+    .option("truncate", False) \
     .start()
 
 query.awaitTermination()
