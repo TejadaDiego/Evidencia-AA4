@@ -1,40 +1,37 @@
 const tabla = document.getElementById("tabla");
 
-// consumir API
-fetch("http://localhost:5000/estaciones")
+tabla.innerHTML = "";
 
-    .then(response => response.json())
+fetch("http://127.0.0.1:5050/estaciones")
+  .then(response => response.json())
+  .then(data => {
 
-    .then(data => {
+    let contador = 1;
 
-        tabla.innerHTML = "";
+    data.forEach(item => {
 
-        let contador = 1;
+      tabla.innerHTML += `
+        <tr>
+          <td>${contador++}</td>
+          <td>${item.estacion_salida}</td>
+          <td>${item.total_pasajeros}</td>
+        </tr>
+      `;
 
-        data.forEach(item => {
-
-            tabla.innerHTML += `
-
-                <tr>
-                    <td>${contador++}</td>
-                    <td>${item.estacion_salida}</td>
-                    <td>${item.total_pasajeros}</td>
-                </tr>
-
-            `;
-        });
-
-    })
-
-    .catch(error => {
-
-        console.error("Error:", error);
-
-        tabla.innerHTML = `
-            <tr>
-                <td colspan="3">
-                    Error cargando datos
-                </td>
-            </tr>
-        `;
     });
+
+  })
+
+  .catch(error => {
+
+    console.error(error);
+
+    tabla.innerHTML = `
+      <tr>
+        <td colspan="3">
+          Error cargando datos
+        </td>
+      </tr>
+    `;
+
+  });

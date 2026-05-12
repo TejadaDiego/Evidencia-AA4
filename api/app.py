@@ -15,7 +15,7 @@ CORS(app)
 # =========================================
 
 client = MongoClient(
-    "mongodb://mongodb:27017/"
+    "mongodb://localhost:27017/"
 )
 
 db = client["pmr_db"]
@@ -60,6 +60,6 @@ if __name__ == "__main__":
 
     app.run(
         host="0.0.0.0",
-        port=5000,
+        port=5050,
         debug=True
     )
