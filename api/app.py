@@ -6,7 +6,7 @@ from flask_cors import CORS
 # INICIAR FLASK
 # =========================================
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 CORS(app)
 
@@ -15,7 +15,7 @@ CORS(app)
 # =========================================
 
 client = MongoClient(
-    "mongodb://localhost:27017/"
+    "mongodb://mongodb:27017/"
 )
 
 db = client["pmr_db"]
@@ -56,10 +56,10 @@ def estaciones():
 # EJECUTAR API
 # =========================================
 
-if __name__ == "__main__":
+if _name_ == "_main_":
 
     app.run(
         host="0.0.0.0",
-        port=5050,
+        port=5000,
         debug=True
     )

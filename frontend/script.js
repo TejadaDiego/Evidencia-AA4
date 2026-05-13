@@ -2,8 +2,10 @@ const tabla = document.getElementById("tabla");
 
 tabla.innerHTML = "";
 
-fetch("http://127.0.0.1:5050/estaciones")
+fetch("http://localhost:5000/estaciones")
+
   .then(response => response.json())
+
   .then(data => {
 
     let contador = 1;
